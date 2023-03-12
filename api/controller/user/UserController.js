@@ -1,4 +1,3 @@
-let request = require("request");
 let mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 const UtilController = require("./../services/UtilController");
@@ -111,64 +110,69 @@ module.exports = {
           let emailObj = await User.findOne({
             email: req.body.email,
           }).select("name active email mobileNo password");
-          userCode = UtilController.comparePassword(
-            emailObj.password,
-            password,
-            passwordSecretKey
-          );
-          if (userCode === returnCode.passwordMatched) {
-            systemCache.set(
-              req.sessionID,
-              emailObj._id,
-              configuration.login.otpValidation
+          if (emailObj) {
+            userCode = UtilController.comparePassword(
+              emailObj.password,
+              password,
+              passwordSecretKey
             );
-            userCode = returnCode.validSession;
-            response = returnCode.validSession;
-            let userSes = systemCache.get(req.sessionID);
-            console.log("User Ses: ", userSes);
-            // check for two factor authorization
-            // if (configuration.login["2FactorAuthentication"]) {
-            //   userCode = returnCode["2FactorEnabled"];
-            //   systemCache.set(
-            //     req.sessionID,
-            //     emailObj._id,
-            //     configuration.login.otpValidation
-            //   ); // 10 minute time
-            //   await module.exports.sendOtp(req, emailObj);
-            // } else {
-            // req.session.userId = emailObj._id;
+            if (userCode === returnCode.passwordMatched) {
+              systemCache.set(
+                req.sessionID,
+                emailObj._id,
+                configuration.login.otpValidation
+              );
+              userCode = returnCode.validSession;
+              response = returnCode.validSession;
+              let userSes = systemCache.get(req.sessionID);
+              console.log("User Ses: ", userSes);
+              // check for two factor authorization
+              // if (configuration.login["2FactorAuthentication"]) {
+              //   userCode = returnCode["2FactorEnabled"];
+              //   systemCache.set(
+              //     req.sessionID,
+              //     emailObj._id,
+              //     configuration.login.otpValidation
+              //   ); // 10 minute time
+              //   await module.exports.sendOtp(req, emailObj);
+              // } else {
+              // req.session.userId = emailObj._id;
 
-            if (!(typeof userSes === "undefined" || userSes === null)) {
-              req.session.userId = userSes;
+              if (!(typeof userSes === "undefined" || userSes === null)) {
+                req.session.userId = userSes;
 
-              userResult = await User.findByIdAndUpdate(userSes, {
-                lastLogin: Math.floor(Date.now() / 1000),
-              });
-              req.session.userType = userResult.userType;
-              req.session.shopId = userResult.shopId;
+                userResult = await User.findByIdAndUpdate(userSes, {
+                  lastLogin: Math.floor(Date.now() / 1000),
+                });
+                req.session.userType = userResult.userType;
+                req.session.shopId = userResult.shopId;
+              } else {
+                response = returnCode.invalidToken;
+              }
+              // userResult = await User.findOneAndUpdate(
+              //   {
+              //     email: req.body.email,
+              //   },
+              //   {
+              //     lastLogin: Math.floor(Date.now() / 1000),
+              //   }
+              // );
+              // }
             } else {
-              response = returnCode.invalidToken;
+              userCode = returnCode.invalidToken;
+              // await User.findOneAndUpdate(
+              //   {
+              //     userName: req.session.username,
+              //   },
+              //   {
+              //     $inc: {
+              //       passwordAttempt: 1,
+              //     },
+              //   }
+              // );
             }
-            // userResult = await User.findOneAndUpdate(
-            //   {
-            //     email: req.body.email,
-            //   },
-            //   {
-            //     lastLogin: Math.floor(Date.now() / 1000),
-            //   }
-            // );
-            // }
           } else {
-            // await User.findOneAndUpdate(
-            //   {
-            //     userName: req.session.username,
-            //   },
-            //   {
-            //     $inc: {
-            //       passwordAttempt: 1,
-            //     },
-            //   }
-            // );
+            userCode = returnCode.invalidToken;
           }
         }
       }

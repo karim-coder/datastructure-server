@@ -1,4 +1,3 @@
-let request = require("request");
 let mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 const UtilController = require("./../services/UtilController");
