@@ -14,6 +14,11 @@ module.exports = {
       createObj["userId"] = req.session.userId;
 
       await Test.create(createObj);
+
+      if (createObj.totalMark / createObj.marksObtained <= 2)
+        await User.findByIdAndUpdate(req.session.userId, {
+          $addToSet: { topicLearned: createObj.category },
+        });
       UtilController.sendSuccess(req, res, next, {
         message: "Test Created successfully",
       });
@@ -35,4 +40,19 @@ module.exports = {
       UtilController.sendError(req, res, next, err);
     }
   },
+
+  // getQuestionsBasedOnTopic: async (req, res, next) => {
+  //   try {
+  //     let result = await Quiz.find({
+  //       userId: mongoose.Types.ObjectId(req.session.userId),
+  //     }).sort({
+  //       updatedAt: -1,
+  //     });
+  //     UtilController.sendSuccess(req, res, next, {
+  //       result,
+  //     });
+  //   } catch (err) {
+  //     UtilController.sendError(req, res, next, err);
+  //   }
+  // },
 };

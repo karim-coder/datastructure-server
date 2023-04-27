@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    topicLearned: {
+      type: Array,
+      default: [],
+    },
     currentSessionId: String,
     fcmToken: {
       type: String,

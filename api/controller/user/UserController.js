@@ -30,7 +30,7 @@ module.exports = {
           });
         }
         user = await User.findById(req.session.userId)
-          .select("fname lname email mobileNo userName userType ")
+          .select("fname lname email mobileNo userName userType topicLearned")
           .lean();
         //         notificationCount = await Notification.countDocuments({
         //   receiverId,
