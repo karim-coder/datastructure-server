@@ -40,10 +40,7 @@ const userSchema = mongoose.Schema(
       default: "",
     },
     currentSessionId: String,
-    fcmToken: {
-      type: String,
-      default: "",
-    },
+   
     dob: Number,
     updatedAt: {
       type: Number,

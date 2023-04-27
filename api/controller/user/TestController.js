@@ -1,4 +1,4 @@
-let request = require("request");
+// let request = require("request");
 let mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 const UtilController = require("./../services/UtilController");
@@ -26,6 +26,20 @@ module.exports = {
     try {
       let result = await Test.find({
         userId: mongoose.Types.ObjectId(req.session.userId),
+      }).sort({
+        updatedAt: -1,
+      });
+      UtilController.sendSuccess(req, res, next, {
+        result,
+      });
+    } catch (err) {
+      UtilController.sendError(req, res, next, err);
+    }
+  },
+  getUserTest: async (req, res, next) => {
+    try {
+      let result = await Test.find({
+        userId: req.body.userId,
       }).sort({
         updatedAt: -1,
       });

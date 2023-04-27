@@ -1,4 +1,4 @@
-let request = require("request");
+// let request = require("request");
 let mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 const responseCode = require("./../../../config/responseCode").returnCode;
@@ -34,6 +34,11 @@ module.exports = {
       returnObj = true;
     }
     return returnObj;
+  },
+  pad: (num, size) => {
+    var s = num + "";
+    while (s.length < size) s = "0" + s;
+    return s;
   },
 
   comparePassword: (passwordHash, userPassword, secretKey) => {
