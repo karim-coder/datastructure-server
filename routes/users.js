@@ -26,13 +26,14 @@ router.route("/logout").get(UserController.accountLogout);
 // test
 router.route("/test/create").post(TestController.createTest); // Post
 router.route("/test/all").get(TestController.getAllTest); // Post
+router.route("/test").post(TestController.getUserTest); // Post
 
 // quiz
 router.route("/quiz/create").post(QuizController.createQuiz); // Post
 router.route("/quiz/delete").post(QuizController.deleteQuiz); // Post
 router.route("/quiz/all").post(QuizController.getAllQuiz); // Post
 router.route("/quiz/update").put(QuizController.updateQuiz); // Put
-router.route("/test").post(TestController.getUserTest); // Post
+router.route("/quiz/topic").post(QuizController.getQuizBasedOnTopic); // Post
 
 // Dashboard
 

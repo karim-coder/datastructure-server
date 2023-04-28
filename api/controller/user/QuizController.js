@@ -73,4 +73,20 @@ module.exports = {
       UtilController.sendError(req, res, next, err);
     }
   },
+
+  getQuizBasedOnTopic: async (req, res, next) => {
+    try {
+      const results = await Quiz.aggregate([
+        { $match: { category: req.body.category } },
+        { $sample: { size: req.body.NoOfQuestion } },
+      ]);
+      // res.json(results);
+
+      UtilController.sendSuccess(req, res, next, {
+        rows: results,
+      });
+    } catch (err) {
+      UtilController.sendError(req, res, next, err);
+    }
+  },
 };
