@@ -481,4 +481,37 @@ module.exports = {
       UtilController.sendError(req, res, next, err);
     }
   },
+
+  getProfile: async (req, res, next) => {
+    try {
+      if (!UtilController.isEmpty(req.session.userId)) {
+        const userId = req.session.userId;
+        const userData = await User.findById(userId);
+
+        if (userData.topicLearned.length > 0) {
+          const result = await Test.aggregate([
+            { $match: { category: { $in: userData.topicLearned } } },
+            {
+              $group: {
+                _id: "$category",
+                marksObtained: { $max: "$marksObtained" },
+                totalMark: { $first: "$totalMark" },
+                createdAt: { $first: "$createdAt" },
+              },
+            },
+          ])
+            .sort({ createdAt: -1 })
+            .exec();
+
+          UtilController.sendSuccess(req, res, next, {
+            result,
+          });
+        } else {
+          UtilController.sendSuccess(req, res, next, {});
+        }
+      }
+    } catch (err) {
+      UtilController.sendError(req, res, next, err);
+    }
+  },
 };

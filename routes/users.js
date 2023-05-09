@@ -22,6 +22,7 @@ router.route("/login").post(UserController.accountLogin);
 router.route("/admin/login").post(UserController.accountAdminLogin);
 router.route("/islogin").get(UserController.accountLoginStatus);
 router.route("/logout").get(UserController.accountLogout);
+router.route("/profile").get(UserController.getProfile);
 
 // test
 router.route("/test/create").post(TestController.createTest); // Post
